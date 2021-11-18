@@ -1,0 +1,296 @@
+kind: pipeline
+type: kubernetes
+name: build-deploy
+
+steps:
+  - name: pre
+    image: registry-aws.veriga.net/base-image:pre-post
+    pull: always
+    environment:
+      ABBREVIATION: ${ABBREVIATION}
+      AWS_ACCESS_KEY_ID:
+        from_secret: pre_aws_access_key_id
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: pre_aws_secret_access_key
+      AWS_DEFAULT_REGION:
+        from_secret: pre_aws_default_region
+      CLOUDFLARE_API_TOKEN:
+        from_secret: cloudflare_api_token_verigasvccom
+      CLOUDFLARE_ZONE_NAME: ${CLOUDFLARE_ZONE_NAME}
+      CLOUDFLARE_ZONE_ID: ${CLOUDFLARE_ZONE_ID}
+      K8S_CLUSTER: ${K8S_CLUSTER}
+      LOGGING: ${LOGGING}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME}
+    commands:
+      - prestep
+
+  - name: rebrand-node
+    image: registry-aws.veriga.net/rebrand:latest
+    pull: always
+    environment:
+      ABBREVIATION: ${ABBREVIATION}
+      BLOCK_NAME: ${BLOCK_NAME}
+      CANARY_BETA_PUBLIC_KEY: ${CANARY_BETA_PUBLIC_KEY}
+      CANARY_LIVE_PUBLIC_KEY: ${CANARY_LIVE_PUBLIC_KEY}
+      CANARY_TEST_PUBLIC_KEY: ${CANARY_TEST_PUBLIC_KEY}
+      CUSTOM_DOMAIN: ${CUSTOM_DOMAIN}
+      DEBUG: ${DEBUG}
+      DOMAIN: ${DOMAIN}
+      DOMAINSVC: ${DOMAINSVC}
+      FAUCET_PUBLIC_KEY: ${FAUCET_PUBLIC_KEY}
+      LANDING_PUBLIC_KEY: ${LANDING_PUBLIC_KEY}
+      GENESIS_DEV_PUBLIC_KEY: ${GENESIS_DEV_PUBLIC_KEY}
+      GENESIS_DEV_PRIVATE_KEY: ${GENESIS_DEV_PRIVATE_KEY}
+      GENESIS_DEV_ACCOUNT: ${GENESIS_DEV_ACCOUNT}
+      GENESIS_DEV_WORK: ${GENESIS_DEV_WORK}
+      GENESIS_DEV_SIGNATURE: ${GENESIS_DEV_SIGNATURE}
+      GENESIS_BETA_PUBLIC_KEY: $GENESIS_BETA_PUBLIC_KEY
+      GENESIS_BETA_ACCOUNT: $GENESIS_BETA_ACCOUNT
+      GENESIS_BETA_WORK: $GENESIS_BETA_WORK
+      GENESIS_BETA_SIGNATURE: $GENESIS_BETA_SIGNATURE
+      GENESIS_LIVE_PUBLIC_KEY: $GENESIS_LIVE_PUBLIC_KEY
+      GENESIS_LIVE_ACCOUNT: $GENESIS_LIVE_ACCOUNT
+      GENESIS_LIVE_WORK: $GENESIS_LIVE_WORK
+      GENESIS_LIVE_SIGNATURE: $GENESIS_LIVE_SIGNATURE
+      GENESIS_TEST_PUBLIC_KEY: $GENESIS_TEST_PUBLIC_KEY
+      GENESIS_TEST_ACCOUNT: $GENESIS_TEST_ACCOUNT
+      GENESIS_TEST_WORK: $GENESIS_TEST_WORK
+      GENESIS_TEST_SIGNATURE: $GENESIS_TEST_SIGNATURE
+      LIVE_PRE_CONFIGURED_REP0: $LIVE_PRE_CONFIGURED_REP0
+      LIVE_PRE_CONFIGURED_REP1: $LIVE_PRE_CONFIGURED_REP1
+      LIVE_PRE_CONFIGURED_REP2: $LIVE_PRE_CONFIGURED_REP2
+      LIVE_PRE_CONFIGURED_REP3: $LIVE_PRE_CONFIGURED_REP3
+      LIVE_PRE_CONFIGURED_REP4: $LIVE_PRE_CONFIGURED_REP4
+      LIVE_PRE_CONFIGURED_REP5: $LIVE_PRE_CONFIGURED_REP5
+      LIVE_PRE_CONFIGURED_REP6: $LIVE_PRE_CONFIGURED_REP6
+      LIVE_PRE_CONFIGURED_REP7: $LIVE_PRE_CONFIGURED_REP7
+      LIVE_NODE_PEERING_PORT: $LIVE_NODE_PEERING_PORT
+      LOGGING: $LOGGING
+      BETA_NODE_PEERING_PORT: $BETA_NODE_PEERING_PORT
+      TEST_NODE_PEERING_PORT: $TEST_NODE_PEERING_PORT
+      LIVE_RPC_PORT: $LIVE_RPC_PORT
+      BETA_RPC_PORT: $BETA_RPC_PORT
+      TEST_RPC_PORT: $TEST_RPC_PORT
+      NODE_VERSION: $NODE_VERSION
+      NUMBER_OF_PEERS: $NUMBER_OF_PEERS
+    commands:
+      - git clone https://github.com/nanocurrency/nano-node.git nano-node
+      - cd nano-node
+      - git checkout $${NODE_VERSION}
+      - git submodule update --init --recursive
+      - rebrand
+    depends_on:
+      - pre
+
+  - name: rebrand-nault
+    image: registry-aws.veriga.net/rebrand:latest
+    pull: always
+    environment:
+      ABBREVIATION: ${ABBREVIATION}
+      DOMAIN: ${DOMAIN}
+      DOMAINSVC: ${DOMAINSVC}
+      LIVE_REP0: ${LIVE_REP0}
+      LIVE_REP1: ${LIVE_REP1}
+      NAULT_VERSION: ${NAULT_VERSION}
+    commands:
+      - git clone https://github.com/Nault/Nault.git Nault
+      - cd Nault; git checkout $${NAULT_VERSION} # v1.15.0
+      - rebrand-nault
+    depends_on:
+      - pre
+
+  - name: rebrand-ninja
+    image: registry-aws.veriga.net/rebrand:latest
+    pull: always
+    environment:
+      ABBREVIATION: ${ABBREVIATION}
+      LIVE_REP0: ${LIVE_REP0}
+      LIVE_REP1: ${LIVE_REP1}
+    commands:
+      - git clone https://github.com/BitDesert/MyNanoNinja.git MyNanoNinja
+      - rebrand-ninja
+    depends_on:
+      - pre
+
+  - name: build-push-nault
+    image: registry-aws.veriga.net/base-image:dind-awscli
+    pull: always
+    volumes:
+      - name: dockersock
+        path: /var/run
+    environment:
+      ABBREVIATION: ${ABBREVIATION}
+      AWS_ACCESS_KEY_ID:
+        from_secret: drone_aws_access_key_id
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: drone_aws_secret_access_key
+      ECR: ${ECR}
+      NODE_VERSION: ${NODE_VERSION}
+      REPO_NAME: ${REPO_NAME}
+    commands:
+      - sleep 5 # give docker enough time to start
+      - wget https://raw.githubusercontent.com/veriganet/nanocurrency-js/main/packages/nanocurrency/nanocurrency-v2.5.0.tar.gz
+      - mkdir Nault/nanocurrency-js; tar -xvf nanocurrency-v2.5.0.tar.gz -C Nault/nanocurrency-js
+      - sed '/^RUN\ npm\ install.*/a COPY\ nanocurrency\-js\/dist\ \/usr\/src\/app\/node_modules\/nanocurrency\/dist' Nault/Dockerfile | tee Nault/Dockerfile
+      - docker build -f Nault/Dockerfile -t $REPO_NAME:nault-latest Nault
+      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR
+      - docker tag $REPO_NAME:nault-latest $ECR/$REPO_NAME:nault-latest
+      - docker push $ECR/$REPO_NAME:nault-latest
+    when:
+      event:
+        - push
+    depends_on:
+      - pre
+      - rebrand-nault
+
+  - name: build-push-ninja
+    image: registry-aws.veriga.net/base-image:dind-awscli
+    pull: always
+    volumes:
+      - name: dockersock
+        path: /var/run
+    environment:
+      ABBREVIATION: ${ABBREVIATION}
+      AWS_ACCESS_KEY_ID:
+        from_secret: drone_aws_access_key_id
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: drone_aws_secret_access_key
+      ECR: ${ECR}
+      REPO_NAME: ${REPO_NAME}
+    commands:
+      - sleep 5 # give docker enough time to start
+      - docker build -f MyNanoNinja/Dockerfile -t $REPO_NAME:ninja-latest MyNanoNinja
+      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR
+      - docker tag $REPO_NAME:ninja-latest $ECR/$REPO_NAME:ninja-latest
+      - docker push $ECR/$REPO_NAME:ninja-latest
+    when:
+      event:
+        - push
+    depends_on:
+      - pre
+      - rebrand-ninja
+
+  - name: build-binary
+    image: nanocurrency/nano-env:gcc
+    pull: always
+    environment:
+      ABBREVIATION: ${ABBREVIATION}
+      CI_BUILD: OFF
+      NANO_NETWORK: ${NANO_NETWORK}
+      TRAVIS_TAG: DEV_BUILD
+    commands:
+      - mkdir -p nano-node/boost/lib && cp -r /tmp/boost/lib/* nano-node/boost/lib/
+      - |
+        mkdir nano-node/build && \
+        cd nano-node/build && \
+        cmake ../ -DCI_BUILD=${CI_BUILD} \
+        -DBOOST_ROOT=$${BOOST_ROOT} -DPORTABLE=1 \
+        -DACTIVE_NETWORK=nano_$${NANO_NETWORK}_network \
+        -DNANO_POW_SERVER=ON -DNANO_SHARED_BOOST=ON && \
+        make $${ABBREVIATION}_node -j $(nproc) && \
+        make $${ABBREVIATION}_rpc -j $(nproc) && \
+        make $${ABBREVIATION}_pow_server -j $(nproc) && \
+      - echo $${NANO_NETWORK} > nano-network
+    depends_on:
+      - rebrand-node
+
+  - name: build-push-node
+    image: registry-aws.veriga.net/base-image:dind-awscli
+    pull: always
+    volumes:
+      - name: dockersock
+        path: /var/run
+    environment:
+      ABBREVIATION: ${ABBREVIATION}
+      AWS_ACCESS_KEY_ID:
+        from_secret: drone_aws_access_key_id
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: drone_aws_secret_access_key
+      ECR: ${ECR}
+      NODE_VERSION: ${NODE_VERSION}
+      REPO_NAME: ${REPO_NAME}
+    commands:
+      - sleep 5 # give docker enough time to start
+      - docker build -f Dockerfile -t $REPO_NAME:$NODE_VERSION nano-node
+      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR
+      - docker tag $REPO_NAME:$NODE_VERSION $ECR/$REPO_NAME:$NODE_VERSION
+      - docker push $ECR/$REPO_NAME:$NODE_VERSION
+      - zip -jrm $${ABBREVIATION}_$${NODE_VERSION}.zip nano-node/build/$${ABBREVIATION}_node nano-node/build/$${ABBREVIATION}_rpc nano-node/build/$${ABBREVIATION}_pow_server
+    when:
+      event:
+        - push
+    depends_on:
+      - rebrand-node
+      - build-binary
+
+  - name: preprep
+    image: registry-aws.veriga.net/base-image:dind-awscli
+    pull: if-not-exists
+    volumes:
+      - name: dockersock
+        path: /var/run
+    environment:
+      ABBREVIATION: ${ABBREVIATION}
+      AWS_ACCESS_KEY_ID:
+        from_secret: drone_aws_access_key_id
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: drone_aws_secret_access_key
+      ECR: ${ECR}
+      NODE_VERSION: ${NODE_VERSION}
+      REPO_NAME: ${REPO_NAME}
+    commands:
+      - sleep 5 # give docker enough time to start
+      - sed -i 's/_ECR_/'"$ECR"'/g' preprep/Dockerfile
+      - sed -i 's/_ABBREVIATION_/'"$ABBREVIATION"'/g' preprep/Dockerfile
+      - sed -i 's/_NODE_VERSION_/'"$NODE_VERSION"'/g' preprep/Dockerfile
+      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR
+      - docker build -f preprep/Dockerfile -t $REPO_NAME:preprep-latest .
+      - docker tag $REPO_NAME:preprep-latest $ECR/$REPO_NAME:preprep-latest
+      - docker push $ECR/$REPO_NAME:preprep-latest
+    when:
+      event:
+        - push
+    depends_on:
+      - rebrand-node
+      - build-binary
+      - build-push-node
+
+  - name: post
+    image: registry-aws.veriga.net/base-image:pre-post
+    pull: always
+    environment:
+      ABBREVIATION: ${ABBREVIATION}
+      LIVE_REP0: ${LIVE_REP0}
+      LIVE_REP1: ${LIVE_REP1}
+      AWS_ACCESS_KEY_ID:
+        from_secret: pre_aws_access_key_id
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: pre_aws_secret_access_key
+      AWS_DEFAULT_REGION:
+        from_secret: pre_aws_default_region
+      LOGGING: ${LOGGING}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME}
+      BINARY_PUBLIC: ${BINARY_PUBLIC}
+      NODE_VERSION: ${NODE_VERSION}
+    commands:
+      - poststep
+    depends_on:
+      - build-push-node
+
+services:
+  - name: docker
+    image: docker:dind
+    privileged: true
+    environment:
+      ECR: ${ECR}
+      REPO_NAME: ${REPO_NAME}
+    volumes:
+      - name: dockersock
+        path: /var/run
+
+volumes:
+  - name: dockersock
+    temp: {}
+
+image_pull_secrets:
+  - docker_secret_veriga
