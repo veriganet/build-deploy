@@ -131,7 +131,7 @@ steps:
       - sleep 5 # give docker enough time to start
       - wget https://raw.githubusercontent.com/veriganet/nanocurrency-js/main/packages/nanocurrency/nanocurrency-v2.5.0.tar.gz
       - mkdir Nault/nanocurrency-js; tar -xvf nanocurrency-v2.5.0.tar.gz -C Nault/nanocurrency-js
-      - sed '/^RUN\ npm\ install.*/a COPY\ nanocurrency\-js\/dist\ \/usr\/src\/app\/node_modules\/nanocurrency\/dist' Nault/Dockerfile | tee Nault/Dockerfile
+      - sed -i '/^RUN\ npm\ install.*/a COPY\ nanocurrency\-js\/dist\ \/usr\/src\/app\/node_modules\/nanocurrency\/dist' Nault/Dockerfile
       - docker build -f Nault/Dockerfile -t $ABBREVIATION:nault-latest Nault
       - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR
       - docker tag $ABBREVIATION:nault-latest $ECR/$ABBREVIATION:nault-latest
