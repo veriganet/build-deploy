@@ -125,7 +125,7 @@ steps:
         from_secret: drone_aws_access_key_id
       AWS_SECRET_ACCESS_KEY:
         from_secret: drone_aws_secret_access_key
-      ECR: ${ECR}
+      ECR: registry-aws.veriga.net
       NODE_VERSION: ${NODE_VERSION}
     commands:
       - sleep 5 # give docker enough time to start
@@ -133,7 +133,6 @@ steps:
       - mkdir Nault/nanocurrency-js; tar -xvf nanocurrency-v2.5.0.tar.gz -C Nault/nanocurrency-js
       - sed -i '/^RUN\ npm\ install.*/a COPY\ nanocurrency\-js\/dist\ \/usr\/src\/app\/node_modules\/nanocurrency\/dist' Nault/Dockerfile
       - docker build -f Nault/Dockerfile -t $ABBREVIATION:nault-latest Nault
-      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR
       - docker tag $ABBREVIATION:nault-latest $ECR/$ABBREVIATION:nault-latest
       - docker push $ECR/$ABBREVIATION:nault-latest
     depends_on:
@@ -152,11 +151,10 @@ steps:
         from_secret: drone_aws_access_key_id
       AWS_SECRET_ACCESS_KEY:
         from_secret: drone_aws_secret_access_key
-      ECR: ${ECR}
+      ECR: registry-aws.veriga.net
     commands:
       - sleep 5 # give docker enough time to start
       - docker build -f MyNanoNinja/Dockerfile -t $ABBREVIATION:ninja-latest MyNanoNinja
-      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR
       - docker tag $ABBREVIATION:ninja-latest $ECR/$ABBREVIATION:ninja-latest
       - docker push $ECR/$ABBREVIATION:ninja-latest
     depends_on:
@@ -199,12 +197,11 @@ steps:
         from_secret: drone_aws_access_key_id
       AWS_SECRET_ACCESS_KEY:
         from_secret: drone_aws_secret_access_key
-      ECR: ${ECR}
+      ECR: registry-aws.veriga.net
       NODE_VERSION: ${NODE_VERSION}
     commands:
       - sleep 5 # give docker enough time to start
       - docker build -f Dockerfile -t $ABBREVIATION:$NODE_VERSION nano-node
-      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR
       - docker tag $ABBREVIATION:$NODE_VERSION $ECR/$ABBREVIATION:$NODE_VERSION
       - docker push $ECR/$ABBREVIATION:$NODE_VERSION
       - zip -jrm $${ABBREVIATION}_$${NODE_VERSION}.zip nano-node/build/$${ABBREVIATION}_node nano-node/build/$${ABBREVIATION}_rpc nano-node/build/$${ABBREVIATION}_pow_server
@@ -224,14 +221,13 @@ steps:
         from_secret: drone_aws_access_key_id
       AWS_SECRET_ACCESS_KEY:
         from_secret: drone_aws_secret_access_key
-      ECR: ${ECR}
+      ECR: registry-aws.veriga.net
       NODE_VERSION: ${NODE_VERSION}
     commands:
       - sleep 5 # give docker enough time to start
       - sed -i 's/_ECR_/'"$ECR"'/g' preprep/Dockerfile
       - sed -i 's/_ABBREVIATION_/'"$ABBREVIATION"'/g' preprep/Dockerfile
       - sed -i 's/_NODE_VERSION_/'"$NODE_VERSION"'/g' preprep/Dockerfile
-      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR
       - docker build -f preprep/Dockerfile -t $ABBREVIATION:preprep-latest .
       - docker tag $ABBREVIATION:preprep-latest $ECR/$ABBREVIATION:preprep-latest
       - docker push $ECR/$ABBREVIATION:preprep-latest
