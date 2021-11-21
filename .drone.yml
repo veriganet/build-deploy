@@ -26,6 +26,7 @@ steps:
     commands:
       - prestep
 
+
   - name: rebrand-node
     image: veriganet/rebrand:latest
     pull: always
@@ -264,6 +265,10 @@ steps:
       - poststep
     depends_on:
       - build-push-node
+
+trigger:
+  event:
+    - custom
 
 services:
   - name: docker
