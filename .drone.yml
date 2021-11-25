@@ -25,7 +25,9 @@ steps:
       S3_BUCKET_NAME: ${S3_BUCKET_NAME}
     commands:
       - prestep
-
+    when:
+      event:
+        - custom
 
   - name: rebrand-node
     image: veriganet/rebrand:latest
@@ -87,6 +89,9 @@ steps:
       - rebrand
     depends_on:
       - pre
+    when:
+      event:
+        - custom
 
   - name: rebrand-nault
     image: veriganet/rebrand:latest
@@ -106,6 +111,9 @@ steps:
       - rebrand-nault
     depends_on:
       - pre
+    when:
+      event:
+        - custom
 
   - name: rebrand-ninja
     image: veriganet/rebrand:latest
@@ -119,6 +127,9 @@ steps:
       - rebrand-ninja
     depends_on:
       - pre
+    when:
+      event:
+        - custom
 
   - name: build-push-nault
     image: veriganet/base-image:dind-awscli
@@ -143,6 +154,9 @@ steps:
     depends_on:
       - pre
       - rebrand-nault
+    when:
+      event:
+        - custom
 
   - name: build-push-ninja
     image: veriganet/base-image:dind-awscli
@@ -163,6 +177,9 @@ steps:
     depends_on:
       - pre
       - rebrand-ninja
+    when:
+      event:
+        - custom
 
   - name: build-binary
     image: nanocurrency/nano-env:gcc
@@ -189,6 +206,9 @@ steps:
       - echo $${NANO_NETWORK} > nano-network
     depends_on:
       - rebrand-node
+    when:
+      event:
+        - custom
 
   - name: build-push-node
     image: veriganet/base-image:dind-awscli
@@ -214,6 +234,9 @@ steps:
     depends_on:
       - rebrand-node
       - build-binary
+    when:
+      event:
+        - custom
 
   - name: preprep
     image: veriganet/base-image:dind-awscli
@@ -241,6 +264,9 @@ steps:
       - rebrand-node
       - build-binary
       - build-push-node
+    when:
+      event:
+        - custom
 
   - name: post
     image: veriganet/base-image:pre-post
@@ -265,6 +291,9 @@ steps:
       - poststep
     depends_on:
       - build-push-node
+    when:
+      event:
+        - custom
 
   - name: deploy-live
     image: alpine:latest
@@ -281,11 +310,6 @@ steps:
         - promote
       target:
         - live
-
-trigger:
-  event:
-    - custom
-    - promote
 
 services:
   - name: docker
