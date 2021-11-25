@@ -266,6 +266,21 @@ steps:
     depends_on:
       - build-push-node
 
+  - name: deploy-live
+    image: alpine:latest
+    pull: if-not-exists
+    settings:
+      from_secret: docker_secret_veriga
+    environment:
+      ABBREVIATION: ${ABBREVIATION}
+    commands:
+      - echo "This is the deployment step!"
+    when:
+      event:
+        - promote
+      target:
+        - live
+
 trigger:
   event:
     - custom
