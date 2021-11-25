@@ -275,6 +275,7 @@ steps:
       ABBREVIATION: ${ABBREVIATION}
     commands:
       - echo "This is the deployment step!"
+      - echo $ABBREVIATION
     when:
       event:
         - promote
