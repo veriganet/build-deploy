@@ -285,6 +285,7 @@ steps:
 trigger:
   event:
     - custom
+    - promote
 
 services:
   - name: docker
