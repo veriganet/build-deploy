@@ -28,6 +28,9 @@ steps:
     when:
       event:
         - custom
+      target:
+        exclude:
+          - live
 
   - name: rebrand-node
     image: veriganet/rebrand:latest
@@ -92,6 +95,9 @@ steps:
     when:
       event:
         - custom
+      target:
+        exclude:
+          - live
 
   - name: rebrand-nault
     image: veriganet/rebrand:latest
@@ -114,6 +120,9 @@ steps:
     when:
       event:
         - custom
+      target:
+        exclude:
+          - live
 
   - name: rebrand-ninja
     image: veriganet/rebrand:latest
@@ -130,6 +139,9 @@ steps:
     when:
       event:
         - custom
+      target:
+        exclude:
+          - live
 
   - name: build-push-nault
     image: veriganet/base-image:dind-awscli
@@ -157,6 +169,9 @@ steps:
     when:
       event:
         - custom
+      target:
+        exclude:
+          - live
 
   - name: build-push-ninja
     image: veriganet/base-image:dind-awscli
@@ -180,6 +195,9 @@ steps:
     when:
       event:
         - custom
+      target:
+        exclude:
+          - live
 
   - name: build-binary
     image: nanocurrency/nano-env:gcc
@@ -209,6 +227,9 @@ steps:
     when:
       event:
         - custom
+      target:
+        exclude:
+          - live
 
   - name: build-push-node
     image: veriganet/base-image:dind-awscli
@@ -237,6 +258,9 @@ steps:
     when:
       event:
         - custom
+      target:
+        exclude:
+          - live
 
   - name: preprep
     image: veriganet/base-image:dind-awscli
@@ -267,6 +291,9 @@ steps:
     when:
       event:
         - custom
+      target:
+        exclude:
+          - live
 
   - name: post
     image: veriganet/base-image:pre-post
@@ -294,6 +321,9 @@ steps:
     when:
       event:
         - custom
+      target:
+        exclude:
+          - live
 
   - name: deploy-live
     image: alpine:latest
@@ -309,7 +339,8 @@ steps:
       event:
         - promote
       target:
-        - live
+        include:
+          - live
 
 services:
   - name: docker
