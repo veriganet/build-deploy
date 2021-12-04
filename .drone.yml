@@ -2,8 +2,11 @@ kind: pipeline
 type: kubernetes
 name: build-deploy
 
+environment:
+  VERIGA_API_URL: 'http://174.92.112.52:8000/api'
+
 steps:
-  - name: pre
+  - name: pre-build
     image: veriganet/base-image:pre-post
     pull: always
     settings:
@@ -31,6 +34,7 @@ steps:
       target:
         exclude:
           - live
+          - live-terminate
 
   - name: rebrand-node
     image: veriganet/rebrand:latest
@@ -98,6 +102,7 @@ steps:
       target:
         exclude:
           - live
+          - live-terminate
 
   - name: rebrand-nault
     image: veriganet/rebrand:latest
@@ -123,6 +128,7 @@ steps:
       target:
         exclude:
           - live
+          - live-terminate
 
   - name: rebrand-ninja
     image: veriganet/rebrand:latest
@@ -140,8 +146,8 @@ steps:
       event:
         - custom
       target:
-        exclude:
-          - live
+        - live
+        - live-terminate
 
   - name: build-push-nault
     image: veriganet/base-image:dind-awscli
@@ -172,6 +178,7 @@ steps:
       target:
         exclude:
           - live
+          - live-terminate
 
   - name: build-push-ninja
     image: veriganet/base-image:dind-awscli
@@ -198,6 +205,7 @@ steps:
       target:
         exclude:
           - live
+          - live-terminate
 
   - name: build-binary
     image: nanocurrency/nano-env:gcc
@@ -230,6 +238,7 @@ steps:
       target:
         exclude:
           - live
+          - live-terminate
 
   - name: build-push-node
     image: veriganet/base-image:dind-awscli
@@ -261,6 +270,7 @@ steps:
       target:
         exclude:
           - live
+          - live-terminate
 
   - name: preprep
     image: veriganet/base-image:dind-awscli
@@ -294,8 +304,9 @@ steps:
       target:
         exclude:
           - live
+          - live-terminate
 
-  - name: post
+  - name: post-build
     image: veriganet/base-image:pre-post
     pull: if-not-exists
     settings:
@@ -324,6 +335,7 @@ steps:
       target:
         exclude:
           - live
+          - live-terminate
 
   - name: deploy-live
     image: alpine:latest
@@ -341,6 +353,112 @@ steps:
       target:
         include:
           - live
+
+  - name: terminate-live
+    image: veriganet/dind-awscli
+    pull: if-not-exists
+    privileged: true
+    settings:
+      from_secret: docker_secret_veriga
+    environment:
+      ABBREVIATION: "kor"
+      ECR: veriganet
+      NODE_VERSION: V22.1
+    commands:
+      - echo "terminate step 0"
+    when:
+      event:
+        - promote
+      target:
+        include:
+          - live-terminate
+
+  - name: build-status-update
+    image: veriganet/base-image:pre-post
+    pull: if-not-exists
+    environment:
+      VERIGA_BUILD_DEPLOY_ID: ${VERIGA_BUILD_DEPLOY_ID}
+      VERIGA_ADMIN_TOKEN:
+        from_secret: VERIGA_ADMIN_TOKEN
+    when:
+      event:
+        - custom
+      status:
+        - success
+        - failure
+      target:
+        exclude:
+          - live
+    depends_on:
+      - build0
+    commands:
+      - |
+        curl --header "Content-Type: application/json" \
+        --header "Authorization: Token $VERIGA_ADMIN_TOKEN" \
+        --request PATCH \
+        --data '{"status": "'$DRONE_BUILD_STATUS'"}' \
+        $VERIGA_API_URL/admin/blockchains/builds-deploys/$VERIGA_BUILD_DEPLOY_ID
+
+
+
+  - name: deploy-status-update
+    image: veriganet/base-image:pre-post
+    pull: if-not-exists
+    environment:
+      VERIGA_BUILD_DEPLOY_ID: ${VERIGA_BUILD_DEPLOY_ID}
+      VERIGA_ADMIN_TOKEN:
+        from_secret: VERIGA_ADMIN_TOKEN
+    when:
+      event:
+        - promote
+      status:
+        - success
+        - failure
+      target:
+        include:
+          - live
+    commands:
+      - |
+        curl --header "Content-Type: application/json" \
+        --header "Authorization: Token $VERIGA_ADMIN_TOKEN" \
+        --request PATCH \
+        --data '{"status": "'$DRONE_BUILD_STATUS'"}' \
+        $VERIGA_API_URL/admin/blockchains/builds-deploys/$VERIGA_BUILD_DEPLOY_ID
+
+
+  - name: terminate-status-update
+    image: veriganet/base-image:pre-post
+    pull: if-not-exists
+    environment:
+      VERIGA_BLOCK_CHAIN_ID: ${VERIGA_BLOCK_CHAIN_ID}
+      VERIGA_BUILD_DEPLOY_ID: ${VERIGA_BUILD_DEPLOY_ID}
+      VERIGA_ADMIN_TOKEN:
+        from_secret: VERIGA_ADMIN_TOKEN
+    when:
+      event:
+        - promote
+      status:
+        - success
+        - failure
+      target:
+        include:
+          - live-terminate
+    commands:
+      # mark
+      - |
+        curl --header 'Content-Type: application/json' \
+        --header "Authorization: Token $VERIGA_ADMIN_TOKEN" \
+        --request PATCH \
+        --data '{"deleted": "true"}' \
+        $VERIGA_API_URL/admin/blockchains/$VERIGA_BLOCK_CHAIN_ID
+      - |
+        curl --header 'Content-Type: application/json' \
+        --header "Authorization: Token $VERIGA_ADMIN_TOKEN" \
+        --request PATCH \
+        --data '{"status": "'$DRONE_BUILD_STATUS'"}' \
+        $VERIGA_API_URL/admin/blockchains/builds-deploys/$VERIGA_BUILD_DEPLOY_ID
+
+
 
 services:
   - name: docker
