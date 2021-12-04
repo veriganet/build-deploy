@@ -6,6 +6,7 @@ environment:
   VERIGA_API_URL: 'http://174.92.112.52:8000/api'
 
 steps:
+  # pre-build
   - name: pre-build
     image: veriganet/base-image:pre-post
     pull: always
@@ -35,7 +36,7 @@ steps:
         exclude:
           - live
           - live-terminate
-
+  # rebrand-node
   - name: rebrand-node
     image: veriganet/rebrand:latest
     pull: always
@@ -103,7 +104,7 @@ steps:
         exclude:
           - live
           - live-terminate
-
+  # rebrand-nault
   - name: rebrand-nault
     image: veriganet/rebrand:latest
     pull: if-not-exists
@@ -129,7 +130,7 @@ steps:
         exclude:
           - live
           - live-terminate
-
+  # rebrand-ninja
   - name: rebrand-ninja
     image: veriganet/rebrand:latest
     pull: if-not-exists
@@ -148,7 +149,7 @@ steps:
       target:
         - live
         - live-terminate
-
+  # build-push-nault
   - name: build-push-nault
     image: veriganet/base-image:dind-awscli
     pull: if-not-exists
@@ -179,7 +180,7 @@ steps:
         exclude:
           - live
           - live-terminate
-
+  # build-push-ninja
   - name: build-push-ninja
     image: veriganet/base-image:dind-awscli
     pull: if-not-exists
@@ -206,7 +207,7 @@ steps:
         exclude:
           - live
           - live-terminate
-
+  # build-binary
   - name: build-binary
     image: nanocurrency/nano-env:gcc
     pull: if-not-exists
@@ -239,7 +240,7 @@ steps:
         exclude:
           - live
           - live-terminate
-
+  # build-push-node
   - name: build-push-node
     image: veriganet/base-image:dind-awscli
     pull: always
@@ -271,7 +272,7 @@ steps:
         exclude:
           - live
           - live-terminate
-
+  # preprep
   - name: preprep
     image: veriganet/base-image:dind-awscli
     pull: if-not-exists
@@ -305,7 +306,7 @@ steps:
         exclude:
           - live
           - live-terminate
-
+  # post-build
   - name: post-build
     image: veriganet/base-image:pre-post
     pull: if-not-exists
@@ -336,7 +337,7 @@ steps:
         exclude:
           - live
           - live-terminate
-
+  # deploy-live
   - name: deploy-live
     image: alpine:latest
     pull: if-not-exists
@@ -353,7 +354,7 @@ steps:
       target:
         include:
           - live
-
+  # terminate-live
   - name: terminate-live
     image: veriganet/dind-awscli
     pull: if-not-exists
@@ -372,7 +373,7 @@ steps:
       target:
         include:
           - live-terminate
-
+  # build-status-update
   - name: build-status-update
     image: veriganet/base-image:pre-post
     pull: if-not-exists
@@ -390,7 +391,14 @@ steps:
         exclude:
           - live
     depends_on:
-      - build0
+      - pre-build
+      - rebrand-node
+      - rebrand-nault
+      - rebrand-ninja
+      - build-binary
+      - build-push-node
+      - preprep
+      - post-build
     commands:
       - |
         curl --header "Content-Type: application/json" \
@@ -401,6 +409,7 @@ steps:
 
 
 
+  # deploy-status-update
   - name: deploy-status-update
     image: veriganet/base-image:pre-post
     pull: if-not-exists
@@ -425,7 +434,7 @@ steps:
         --data '{"status": "'$DRONE_BUILD_STATUS'"}' \
         $VERIGA_API_URL/admin/blockchains/builds-deploys/$VERIGA_BUILD_DEPLOY_ID
 
-
+  # terminate-status-update
   - name: terminate-status-update
     image: veriganet/base-image:pre-post
     pull: if-not-exists
@@ -444,7 +453,6 @@ steps:
         include:
           - live-terminate
     commands:
-      # mark
       - |
         curl --header 'Content-Type: application/json' \
         --header "Authorization: Token $VERIGA_ADMIN_TOKEN" \
