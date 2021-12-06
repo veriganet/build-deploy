@@ -96,7 +96,7 @@ steps:
       - git submodule update --init --recursive
       - rebrand
     depends_on:
-      - pre
+      - pre-build
     when:
       event:
         - custom
@@ -122,7 +122,7 @@ steps:
       - cd Nault; git checkout $NAULT_VERSION # v1.15.0
       - rebrand-nault
     depends_on:
-      - pre
+      - pre-build
     when:
       event:
         - custom
@@ -142,7 +142,7 @@ steps:
       - git clone https://github.com/BitDesert/MyNanoNinja.git MyNanoNinja
       - rebrand-ninja
     depends_on:
-      - pre
+      - pre-build
     when:
       event:
         - custom
@@ -171,7 +171,7 @@ steps:
       - docker build -f Nault/Dockerfile -t $ECR/$ABBREVIATION:nault-latest Nault
       - docker push $ECR/$ABBREVIATION:nault-latest
     depends_on:
-      - pre
+      - pre-build
       - rebrand-nault
     when:
       event:
@@ -198,7 +198,7 @@ steps:
       - docker build -f MyNanoNinja/Dockerfile -t $ECR/$ABBREVIATION:ninja-latest MyNanoNinja
       - docker push $ECR/$ABBREVIATION:ninja-latest
     depends_on:
-      - pre
+      - pre-build
       - rebrand-ninja
     when:
       event:
@@ -406,9 +406,6 @@ steps:
         --request PATCH \
         --data '{"status": "'$DRONE_BUILD_STATUS'"}' \
         $VERIGA_API_URL/admin/blockchains/builds-deploys/$VERIGA_BUILD_DEPLOY_ID
-
-
-
   # deploy-status-update
   - name: deploy-status-update
     image: veriganet/base-image:pre-post
@@ -433,7 +430,6 @@ steps:
         --request PATCH \
         --data '{"status": "'$DRONE_BUILD_STATUS'"}' \
         $VERIGA_API_URL/admin/blockchains/builds-deploys/$VERIGA_BUILD_DEPLOY_ID
-
   # terminate-status-update
   - name: terminate-status-update
     image: veriganet/base-image:pre-post
