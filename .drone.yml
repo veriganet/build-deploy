@@ -147,8 +147,9 @@ steps:
       event:
         - custom
       target:
-        - live
-        - live-terminate
+        exclude:
+          - live
+          - live-terminate
   # build-push-nault
   - name: build-push-nault
     image: veriganet/base-image:dind-awscli
