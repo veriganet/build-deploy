@@ -394,13 +394,6 @@ steps:
         exclude:
           - live
     depends_on:
-      - pre-build
-      - rebrand-node
-      - rebrand-nault
-      - rebrand-ninja
-      - build-binary
-      - build-push-node
-      - preprep
       - post-build
     commands:
       - |
