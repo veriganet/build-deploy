@@ -141,7 +141,7 @@ steps:
       NINJA_VERSION: ${NINJA_VERSION}
     commands:
       - git clone https://github.com/BitDesert/MyNanoNinja.git MyNanoNinja
-      - git git reset --hard $NINJA_VERSION
+      - git reset --hard $NINJA_VERSION
       - rebrand-ninja
     depends_on:
       - pre-build
