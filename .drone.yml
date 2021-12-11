@@ -138,7 +138,7 @@ steps:
       ABBREVIATION: ${ABBREVIATION}
       LIVE_REP0: ${LIVE_REP0}
       LIVE_REP1: ${LIVE_REP1}
-      NINJA_VERSION: 663a5b24e2a8e1d423fc3311a6945cc0d234953e
+      NINJA_VERSION: ${NINJA_VERSION}
     commands:
       - git clone https://github.com/BitDesert/MyNanoNinja.git MyNanoNinja
       - git git reset --hard $NINJA_VERSION
