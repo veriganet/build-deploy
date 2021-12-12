@@ -39,7 +39,7 @@ steps:
   # rebrand-node
   - name: rebrand-node
     image: veriganet/rebrand:latest
-    pull: always
+    pull: if-not-exists
     settings:
       from_secret: docker_secret_veriga
     environment:
@@ -141,7 +141,7 @@ steps:
       NINJA_VERSION: ${NINJA_VERSION}
     commands:
       - git clone https://github.com/BitDesert/MyNanoNinja.git MyNanoNinja
-      - git reset --hard $NINJA_VERSION
+      - cd MyNanoNinja; git reset --hard $NINJA_VERSION; cd ..
       - rebrand-ninja
     depends_on:
       - pre-build
