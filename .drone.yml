@@ -200,7 +200,7 @@ steps:
     commands:
       - sleep 5 # give docker enough time to start
       - docker login -u veriganet -p $DOCKER_API_KEY
-      - docker build -f MyNanoNinja/Dockerfile -t $ECR/$ABBREVIATION:$NINJA_VERSION MyNanoNinja
+      - docker build -f MyNanoNinja/Dockerfile -t $ECR/$ABBREVIATION:ninja-$NINJA_VERSION MyNanoNinja
       - docker push $ECR/$ABBREVIATION:ninja-$NINJA_VERSION
     depends_on:
       - pre-build
