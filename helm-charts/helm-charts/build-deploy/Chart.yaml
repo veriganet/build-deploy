@@ -1,0 +1,28 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: Helm chart for build-deploy
+name: build-deploy
+version: 22.1.0
+type: application
+
+dependencies:
+  - name: nault
+    version: 22.1.0
+    repository: https://charts.veriga.net
+  - name: ninja
+    version: 22.1.0
+    repository: https://charts.veriga.net
+  - name: nano-node
+    alias: node
+    version: 22.1.0
+    repository: https://charts.veriga.net
+  - name: proxy
+    version: 22.1.0
+    repository: https://charts.veriga.net
+  - name: pv
+    version: 22.1.0
+    repository: https://charts.veriga.net
+  - name: nano-node
+    alias: rpc
+    version: 22.1.0
+    repository: https://charts.veriga.net

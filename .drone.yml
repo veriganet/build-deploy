@@ -119,7 +119,7 @@ steps:
       NAULT_VERSION: ${NAULT_VERSION}
     commands:
       - git clone https://github.com/Nault/Nault.git Nault
-      - cd Nault; git checkout $NAULT_VERSION # v1.15.0
+      - cd Nault; git checkout $NAULT_VERSION
       - rebrand-nault
     depends_on:
       - pre-build
@@ -165,14 +165,15 @@ steps:
         from_secret: docker_api_key
       ECR: veriganet
       NODE_VERSION: ${NODE_VERSION}
+      NAULT_VERSION: ${NAULT_VERSION}
     commands:
       - sleep 5 # give docker enough time to start
       - wget https://raw.githubusercontent.com/veriganet/nanocurrency-js/main/packages/nanocurrency/nanocurrency-v2.5.0.tar.gz
       - mkdir Nault/nanocurrency-js; tar -xvf nanocurrency-v2.5.0.tar.gz -C Nault/nanocurrency-js
       - sed -i '/^RUN\ npm\ install.*/a COPY\ nanocurrency\-js\/dist\ \/usr\/src\/app\/node_modules\/nanocurrency\/dist' Nault/Dockerfile
       - docker login -u veriganet -p $DOCKER_API_KEY
-      - docker build -f Nault/Dockerfile -t $ECR/$ABBREVIATION:nault-latest Nault
-      - docker push $ECR/$ABBREVIATION:nault-latest
+      - docker build -f Nault/Dockerfile -t $ECR/$ABBREVIATION:$NAULT_VERSION Nault
+      - docker push $ECR/$ABBREVIATION:nault-$NAULT_VERSION
     depends_on:
       - pre-build
       - rebrand-nault
@@ -195,11 +196,12 @@ steps:
       DOCKER_API_KEY:
         from_secret: docker_api_key
       ECR: veriganet
+      NINJA_VERSION: ${NINJA_VERSION}
     commands:
       - sleep 5 # give docker enough time to start
       - docker login -u veriganet -p $DOCKER_API_KEY
-      - docker build -f MyNanoNinja/Dockerfile -t $ECR/$ABBREVIATION:ninja-latest MyNanoNinja
-      - docker push $ECR/$ABBREVIATION:ninja-latest
+      - docker build -f MyNanoNinja/Dockerfile -t $ECR/$ABBREVIATION:$NINJA_VERSION MyNanoNinja
+      - docker push $ECR/$ABBREVIATION:ninja-$NINJA_VERSION
     depends_on:
       - pre-build
       - rebrand-ninja
@@ -262,8 +264,8 @@ steps:
       - sleep 5 # give docker enough time to start
       - sed -i 's/_ABR_/'"$ABBREVIATION"'/g' Dockerfile
       - docker login -u veriganet -p $DOCKER_API_KEY
-      - docker build -f Dockerfile -t $ECR/$ABBREVIATION:$NODE_VERSION nano-node
-      - docker push $ECR/$ABBREVIATION:$NODE_VERSION
+      - docker build -f Dockerfile -t $ECR/$ABBREVIATION:node-$NODE_VERSION nano-node
+      - docker push $ECR/$ABBREVIATION:node-$NODE_VERSION
       - zip -jrm $${ABBREVIATION}_$${NODE_VERSION}.zip nano-node/build/$${ABBREVIATION}_node nano-node/build/$${ABBREVIATION}_rpc nano-node/build/$${ABBREVIATION}_pow_server
     depends_on:
       - rebrand-node
@@ -296,8 +298,8 @@ steps:
       - sed -i 's/_ABBREVIATION_/'"$ABBREVIATION"'/g' preprep/Dockerfile
       - sed -i 's/_NODE_VERSION_/'"$NODE_VERSION"'/g' preprep/Dockerfile
       - docker login -u veriganet -p $DOCKER_API_KEY
-      - docker build -f preprep/Dockerfile -t $ECR/$ABBREVIATION:preprep-latest .
-      - docker push $ECR/$ABBREVIATION:preprep-latest
+      - docker build -f preprep/Dockerfile -t $ECR/$ABBREVIATION:preprep-$NODE_VERSION .
+      - docker push $ECR/$ABBREVIATION:preprep-$NODE_VERSION
     depends_on:
       - rebrand-node
       - build-binary
@@ -457,7 +459,6 @@ steps:
         --request PATCH \
         --data '{"status": "'$DRONE_BUILD_STATUS'"}' \
         $VERIGA_API_URL/admin/blockchains/builds-deploys/$VERIGA_BUILD_DEPLOY_ID
-
 
 
 services:
