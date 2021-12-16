@@ -172,7 +172,7 @@ steps:
       - mkdir Nault/nanocurrency-js; tar -xvf nanocurrency-v2.5.0.tar.gz -C Nault/nanocurrency-js
       - sed -i '/^RUN\ npm\ install.*/a COPY\ nanocurrency\-js\/dist\ \/usr\/src\/app\/node_modules\/nanocurrency\/dist' Nault/Dockerfile
       - docker login -u veriganet -p $DOCKER_API_KEY
-      - docker build -f Nault/Dockerfile -t $ECR/$ABBREVIATION:$NAULT_VERSION Nault
+      - docker build -f Nault/Dockerfile -t $ECR/$ABBREVIATION:nault-$NAULT_VERSION Nault
       - docker push $ECR/$ABBREVIATION:nault-$NAULT_VERSION
     depends_on:
       - pre-build
