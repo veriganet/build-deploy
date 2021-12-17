@@ -87,12 +87,12 @@ steps:
       LIVE_RPC_PORT: ${LIVE_RPC_PORT}
       BETA_RPC_PORT: ${BETA_RPC_PORT}
       TEST_RPC_PORT: ${TEST_RPC_PORT}
-      NODE_VERSION: ${NODE_VERSION}
+      NANO_NODE_VERSION: ${NODE_VERSION}
       NUMBER_OF_PEERS: ${NUMBER_OF_PEERS}
     commands:
       - git clone https://github.com/nanocurrency/nano-node.git nano-node
       - cd nano-node
-      - git checkout $NODE_VERSION
+      - git checkout $NANO_NODE_VERSION
       - git submodule update --init --recursive
       - rebrand
     depends_on:
@@ -164,7 +164,7 @@ steps:
       DOCKER_API_KEY:
         from_secret: docker_api_key
       ECR: veriganet
-      NODE_VERSION: ${NODE_VERSION}
+      NANO_NODE_VERSION: ${NODE_VERSION}
       NAULT_VERSION: ${NAULT_VERSION}
     commands:
       - sleep 5 # give docker enough time to start
@@ -172,7 +172,8 @@ steps:
       - mkdir Nault/nanocurrency-js; tar -xvf nanocurrency-v2.5.0.tar.gz -C Nault/nanocurrency-js
       - sed -i '/^RUN\ npm\ install.*/a COPY\ nanocurrency\-js\/dist\ \/usr\/src\/app\/node_modules\/nanocurrency\/dist' Nault/Dockerfile
       - docker login -u veriganet -p $DOCKER_API_KEY
-      - docker build -f Nault/Dockerfile -t $ECR/$ABBREVIATION:nault-$NAULT_VERSION Nault
+      - docker build -f Nault/Dockerfile -t $ECR/$ABBREVIATION:nault-$NAULT_VERSION -t $ECR/$ABBREVIATION:nault-$NANO_NODE_VERSION Nault
+      - docker push $ECR/$ABBREVIATION:nault-$NANO_NODE_VERSION
       - docker push $ECR/$ABBREVIATION:nault-$NAULT_VERSION
     depends_on:
       - pre-build
@@ -197,11 +198,13 @@ steps:
         from_secret: docker_api_key
       ECR: veriganet
       NINJA_VERSION: ${NINJA_VERSION}
+      NANO_NODE_VERSION: ${NODE_VERSION}
     commands:
       - sleep 5 # give docker enough time to start
       - docker login -u veriganet -p $DOCKER_API_KEY
-      - docker build -f MyNanoNinja/Dockerfile -t $ECR/$ABBREVIATION:ninja-$NINJA_VERSION MyNanoNinja
+      - docker build -f MyNanoNinja/Dockerfile -t $ECR/$ABBREVIATION:ninja-$NINJA_VERSION -t $ECR/$ABBREVIATION:ninja-$NANO_NODE_VERSION MyNanoNinja
       - docker push $ECR/$ABBREVIATION:ninja-$NINJA_VERSION
+      - docker push $ECR/$ABBREVIATION:ninja-$NANO_NODE_VERSION
     depends_on:
       - pre-build
       - rebrand-ninja
@@ -259,14 +262,14 @@ steps:
       DOCKER_API_KEY:
         from_secret: docker_api_key
       ECR: veriganet
-      NODE_VERSION: ${NODE_VERSION}
+      NANO_NODE_VERSION: ${NODE_VERSION}
     commands:
       - sleep 5 # give docker enough time to start
       - sed -i 's/_ABR_/'"$ABBREVIATION"'/g' Dockerfile
       - docker login -u veriganet -p $DOCKER_API_KEY
-      - docker build -f Dockerfile -t $ECR/$ABBREVIATION:node-$NODE_VERSION nano-node
-      - docker push $ECR/$ABBREVIATION:node-$NODE_VERSION
-      - zip -jrm $${ABBREVIATION}_$${NODE_VERSION}.zip nano-node/build/$${ABBREVIATION}_node nano-node/build/$${ABBREVIATION}_rpc nano-node/build/$${ABBREVIATION}_pow_server
+      - docker build -f Dockerfile -t $ECR/$ABBREVIATION:node-$NANO_NODE_VERSION nano-node
+      - docker push $ECR/$ABBREVIATION:node-$NANO_NODE_VERSION
+      - zip -jrm $${ABBREVIATION}_$${NANO_NODE_VERSION}.zip nano-node/build/$${ABBREVIATION}_node nano-node/build/$${ABBREVIATION}_rpc nano-node/build/$${ABBREVIATION}_pow_server
     depends_on:
       - rebrand-node
       - build-binary
@@ -291,15 +294,15 @@ steps:
       DOCKER_API_KEY:
         from_secret: docker_api_key
       ECR: veriganet
-      NODE_VERSION: ${NODE_VERSION}
+      NANO_NODE_VERSION: ${NODE_VERSION}
     commands:
       - sleep 5 # give docker enough time to start
       - sed -i 's/_ECR_/'"$ECR"'/g' preprep/Dockerfile
       - sed -i 's/_ABBREVIATION_/'"$ABBREVIATION"'/g' preprep/Dockerfile
-      - sed -i 's/_NODE_VERSION_/'"$NODE_VERSION"'/g' preprep/Dockerfile
+      - sed -i 's/_NODE_VERSION_/'"$NANO_NODE_VERSION"'/g' preprep/Dockerfile
       - docker login -u veriganet -p $DOCKER_API_KEY
-      - docker build -f preprep/Dockerfile -t $ECR/$ABBREVIATION:preprep-$NODE_VERSION .
-      - docker push $ECR/$ABBREVIATION:preprep-$NODE_VERSION
+      - docker build -f preprep/Dockerfile -t $ECR/$ABBREVIATION:preprep-$NANO_NODE_VERSION .
+      - docker push $ECR/$ABBREVIATION:preprep-$NANO_NODE_VERSION
     depends_on:
       - rebrand-node
       - build-binary
@@ -330,7 +333,7 @@ steps:
       LOGGING: ${LOGGING}
       S3_BUCKET_NAME: ${S3_BUCKET_NAME}
       BINARY_PUBLIC: ${BINARY_PUBLIC}
-      NODE_VERSION: ${NODE_VERSION}
+      NANO_NODE_VERSION: ${NODE_VERSION}
     commands:
       - poststep
     depends_on:
@@ -369,7 +372,7 @@ steps:
     environment:
       ABBREVIATION: "kor"
       ECR: veriganet
-      NODE_VERSION: V22.1
+      NANO_NODE_VERSION: V22.1
     commands:
       - echo "terminate step 0"
     when:
