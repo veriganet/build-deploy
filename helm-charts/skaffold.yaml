@@ -1,0 +1,28 @@
+apiVersion: skaffold/v2beta26
+kind: Config
+profiles:
+  - name: deploy
+    deploy:
+      helm:
+        releases:
+          - name: test
+            namespace: tst
+            createNamespace: true
+            chartPath: ./helm-charts/deploy
+            valuesFiles:
+              - helm-charts/deploy/values.yaml
+            setValues:
+              node.abbreviation: tst
+              node.live.peering.enabeled: true
+              node.live.peering.port: 7176
+              rpc.abbreviation: tst
+              rpc.live.peering.enabled: false
+              rpc.live.rpc.enabled: true
+              nault.abbreviation: tst
+              nault.live.ingress.host: tst-wallet.verigasvc.com
+              ninja.abbreviation: tst
+              ninja.live.ingress.host: tst-ninja.verigasvc.com
+              proxy.abbreviation: tst
+              proxy.live.rpc.ingress.host: tst-rpc.verigasvc.com
+              proxy.live.webSocket.ingress.host: tst-ws.verigasvc.com
+

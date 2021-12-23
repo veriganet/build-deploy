@@ -1,0 +1,21 @@
+apiVersion: skaffold/v2beta26
+kind: Config
+profiles:
+  - name: deploy
+    deploy:
+      helm:
+        releases:
+          - name: _SKAFFOLD_RELEASE_NAME_
+            namespace: _SKAFFOLD_RELEASE_NAMESPACE_
+            createNamespace: true
+            chartPath: ./helm-charts/build-deploy
+            valuesFiles:
+              - helm-charts/build-deploy/values.yaml
+            setValues:
+              deploy.node.live.peering.enabled: "true"
+              deploy.node.live.peering.port: _LIVE_NODE_PEERING_PORT_
+              deploy.nault.live.ingress.host: _ABBREVIATION_-wallet._DOMAINSVC_
+              deploy.ninja.live.ingress.host: _ABBREVIATION_-ninja._DOMAINSVC_
+              deploy.proxy.live.rpc.ingress.host: _ABBREVIATION_-rpc._DOMAINSVC_
+              deploy.proxy.live.webSocket.ingress.host: _ABBREVIATION_-ws._DOMAINSVC_
+

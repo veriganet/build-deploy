@@ -1,0 +1,130 @@
+node:
+  live:
+    enabled: true
+    node:
+      image:
+        tag: "node-V22.1"
+      replicaCount: 2
+      resources:
+        requests:
+          cpu: 300m
+          memory: 256Mi
+        limits:
+          cpu: 300m
+          memory: 256Mi
+      storage: 10Gi
+    peering:
+      enabled: true
+      port: 7176
+    representative:
+      enabled: true
+    rpc:
+      enabled: false
+    webSocket:
+      enabled: false
+
+nault:
+  live:
+    enabled: true
+    image:
+      tag: "nault-V22.1"
+    ingress:
+      host:
+    replicaCount: 2
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "128Mi"
+      limits:
+        cpu: "350m"
+        memory: "256Mi"
+
+ninja:
+  live:
+    enabled: true
+    image:
+      tag: "ninja-V22.1"
+    replicaCount: 1
+    cron:
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "128Mi"
+        limits:
+          cpu: "200m"
+          memory: "128Mi"
+    ingress:
+      host:
+    www:
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "128Mi"
+        limits:
+          cpu: "200m"
+          memory: "128Mi"
+
+rpc:
+  live:
+    enabled: true
+    peering:
+      enabled: false
+    rpc:
+      enabled: true
+      control: false
+      image:
+        tag: "node-V22.1"
+      ingress:
+        enabled: false
+        host:
+      replicaCount: 2
+      resources:
+        requests:
+          cpu: 300m
+          memory: 256Mi
+        limits:
+          cpu: 300m
+          memory: 256Mi
+      storage: 10Gi
+    representative:
+      enabled: false
+    webSocket:
+      enabled: true
+      ingress:
+        enabled: false
+        host:
+
+proxy:
+  live:
+    enabled: true
+    image:
+      tag: V22.1
+    logLevel: "DEBUG"
+    replicaCount: 2
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "256Mi"
+      limits:
+        cpu: "200m"
+        memory: "256Mi"
+    rpc:
+      ingress:
+        enabled: true
+        host:
+    webSocket:
+      ingress:
+        enabled: true
+        host:
+
+pv:
+  enabled: true
+  node:
+    storage: 10Gi
+    replicaCount: 2
+  peering:
+    enabled: true
+  rpc:
+    enabled: true
+    storage: 10Gi
+    replicaCount: 2
