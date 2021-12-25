@@ -38,7 +38,7 @@ steps:
           - live-terminate
   # rebrand-node
   - name: rebrand-node
-    image: veriganet/rebrand:latest
+    image: veriganet/rebrand:V22.1
     pull: if-not-exists
     settings:
       from_secret: docker_secret_veriga

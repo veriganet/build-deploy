@@ -5,7 +5,7 @@ Base repository for build and deploy operation
 
 |              	| Engine 	| App     	| Chart  	|
 |--------------	|--------	|---------	|--------	|
-| Nault        	| V22.1  	| 1.5.0   	| 22.1.0 	|
+| Nault        	| V22.1  	| v1.15.0 	| 22.1.0 	|
 | MyNanoNinja  	| V22.1  	| 663a5b2 	| 22.1.0 	|
 | Nano Node    	| V22.1  	| V22.1   	| 22.1.0 	|
 | NanoRPCProxy 	| V22.1  	| v1.4.4  	| 22.1.0 	|
