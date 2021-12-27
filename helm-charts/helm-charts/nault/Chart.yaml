@@ -1,0 +1,11 @@
+apiVersion: v2
+appVersion: v1.15.0
+description: Helm chart for Nault wallet
+name: nault
+version: 22.1.0
+type: application
+
+dependencies:
+  - name: nault
+    version: 22.1.0
+    repository: https://charts.veriga.net

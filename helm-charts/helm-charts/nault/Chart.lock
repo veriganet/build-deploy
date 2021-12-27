@@ -1,0 +1,6 @@
+dependencies:
+- name: nault
+  repository: https://charts.veriga.net
+  version: 22.1.0
+digest: sha256:a81f568bdd432414be0de8c9266f9a2ce44769200abcc5fb627ed58332bda108
+generated: "2021-12-25T12:25:47.124750436-05:00"

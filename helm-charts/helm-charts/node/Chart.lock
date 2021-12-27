@@ -1,0 +1,6 @@
+dependencies:
+- name: nano-node
+  repository: https://charts.veriga.net
+  version: 22.1.0
+digest: sha256:2099801e42dff79661df02ff3abaf2281ae694abc367c5cc3111e7326a33ba88
+generated: "2021-12-25T12:26:12.413094802-05:00"

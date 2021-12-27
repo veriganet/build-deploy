@@ -1,0 +1,6 @@
+dependencies:
+- name: pv
+  repository: https://charts.veriga.net
+  version: 22.1.0
+digest: sha256:577751145854fd8efa619c0b594a07ed39b0d97746659b5b7b751753365082b0
+generated: "2021-12-25T11:46:59.509682875-05:00"

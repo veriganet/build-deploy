@@ -1,0 +1,14 @@
+pv:
+  live:
+    enabled: true
+    node:
+      enabled: true
+      storage: 10Gi
+      replicaCount: 2
+    peering:
+      enabled: true
+    rpc:
+      enabled: true
+      storage: 10Gi
+      replicaCount: 2
+

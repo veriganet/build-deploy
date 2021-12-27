@@ -1,0 +1,11 @@
+apiVersion: v2
+appVersion: v1.4.4
+description: Helm chart for MyNanoNinja
+name: proxy
+version: 22.1.0
+type: application
+
+dependencies:
+  - name: proxy
+    version: 22.1.0
+    repository: https://charts.veriga.net

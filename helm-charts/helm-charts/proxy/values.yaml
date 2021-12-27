@@ -1,0 +1,22 @@
+proxy:
+  live:
+    enabled: true
+    image:
+      tag: V22.1
+    logLevel: "DEBUG"
+    replicaCount: 2
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "256Mi"
+      limits:
+        cpu: "200m"
+        memory: "256Mi"
+    rpc:
+      ingress:
+        enabled: true
+        host:
+    webSocket:
+      ingress:
+        enabled: true
+        host:

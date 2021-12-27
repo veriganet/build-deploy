@@ -1,0 +1,6 @@
+dependencies:
+- name: proxy
+  repository: https://charts.veriga.net
+  version: 22.1.0
+digest: sha256:47f12e757326ca6e95e902ed997a41f8f455910ed1a5da6edd9f7a79a9fe1212
+generated: "2021-12-25T12:26:23.561633921-05:00"

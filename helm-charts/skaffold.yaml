@@ -5,24 +5,64 @@ profiles:
     deploy:
       helm:
         releases:
-          - name: test
-            namespace: tst
-            createNamespace: true
-            chartPath: ./helm-charts/deploy
+          - name: nault
+            namespace: test
+            chartPath: ./helm-charts/nault
             valuesFiles:
-              - helm-charts/deploy/values.yaml
+              - helm-charts/nault/values.yaml
             setValues:
-              node.abbreviation: tst
-              node.live.peering.enabeled: true
-              node.live.peering.port: 7176
-              rpc.abbreviation: tst
-              rpc.live.peering.enabled: false
-              rpc.live.rpc.enabled: true
-              nault.abbreviation: tst
-              nault.live.ingress.host: tst-wallet.verigasvc.com
-              ninja.abbreviation: tst
-              ninja.live.ingress.host: tst-ninja.verigasvc.com
-              proxy.abbreviation: tst
-              proxy.live.rpc.ingress.host: tst-rpc.verigasvc.com
-              proxy.live.webSocket.ingress.host: tst-ws.verigasvc.com
+              nault.abbreviation: test
+              nault.live.ingress.host: test-wallet.verigasvc.com
+
+          - name: ninja
+            namespace: test
+            chartPath: ./helm-charts/ninja
+            valuesFiles:
+              - helm-charts/ninja/values.yaml
+            setValues:
+              ninja.abbreviation: test
+              ninja.live.ingress.host: test-ninja.verigasvc.com
+
+          - name: node
+            namespace: test
+            chartPath: ./helm-charts/node
+            valuesFiles:
+              - helm-charts/node/values.yaml
+            setValues:
+              nano-node.abbreviation: test
+              nano-node.live.peering.enabeled: true
+              nano-node.live.peering.port: 7180
+
+          - name: proxy
+            namespace: test
+            chartPath: ./helm-charts/proxy
+            valuesFiles:
+              - helm-charts/proxy/values.yaml
+            setValues:
+              proxy.abbreviation: test
+              proxy.live.rpc.ingress.host: test-rpc.verigasvc.com
+              proxy.live.webSocket.ingress.host: test-ws.verigasvc.com
+              proxy.live.nodeURL: http://rpc-live:7076
+              proxy.live.nodeWSURL: http://rpc-live:7078
+
+          # do not delete or uninstall this release
+          # if you must delete, make sure data is backed
+          - name: pv
+            namespace: test
+            chartPath: ./helm-charts/pv
+            valuesFiles:
+              - helm-charts/proxy/values.yaml
+            setValues:
+              pv.abbreviation: test
+
+          - name: rpc
+            namespace: test
+            chartPath: ./helm-charts/rpc
+            valuesFiles:
+              - helm-charts/rpc/values.yaml
+            setValues:
+              nano-node.abbreviation: test
+              nano-node.live.peering.enabled: false
+              nano-node.live.rpc.enabled: true
+              nano-node.live.webSocket.enabled: true
 

@@ -1,0 +1,11 @@
+apiVersion: v2
+appVersion: 663a5b2
+description: Helm chart for MyNanoNinja
+name: ninja
+version: 22.1.0
+type: application
+
+dependencies:
+  - name: ninja
+    version: 22.1.0
+    repository: https://charts.veriga.net

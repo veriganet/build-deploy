@@ -1,0 +1,24 @@
+ninja:
+  live:
+    enabled: true
+    image:
+      tag: "ninja-V22.1"
+    replicaCount: 1
+    cron:
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "128Mi"
+        limits:
+          cpu: "200m"
+          memory: "128Mi"
+    ingress:
+      host:
+    www:
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "128Mi"
+        limits:
+          cpu: "200m"
+          memory: "128Mi"

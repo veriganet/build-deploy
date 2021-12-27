@@ -1,0 +1,6 @@
+dependencies:
+- name: ninja
+  repository: https://charts.veriga.net
+  version: 22.1.0
+digest: sha256:b13091522b1e5f69664f6fe92fbf5c0ab7c4923ca8e5f8238daeb7de0d72dce4
+generated: "2021-12-25T12:25:59.574693633-05:00"

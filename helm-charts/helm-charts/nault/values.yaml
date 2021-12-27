@@ -1,0 +1,15 @@
+nault:
+  live:
+    enabled: true
+    image:
+      tag: "nault-V22.1"
+    ingress:
+      host:
+    replicaCount: 2
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "128Mi"
+      limits:
+        cpu: "350m"
+        memory: "256Mi"

@@ -1,0 +1,29 @@
+nano-node:
+  live:
+    enabled: true
+    peering:
+      enabled: false
+    rpc:
+      enabled: true
+      control: false
+      image:
+        tag: "node-V22.1"
+      ingress:
+        enabled: false
+        host:
+      replicaCount: 2
+      resources:
+        requests:
+          cpu: 300m
+          memory: 256Mi
+        limits:
+          cpu: 300m
+          memory: 256Mi
+      storage: 10Gi
+    representative:
+      enabled: false
+    webSocket:
+      enabled: true
+      ingress:
+        enabled: false
+        host:

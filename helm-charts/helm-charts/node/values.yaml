@@ -1,0 +1,24 @@
+nano-node:
+  live:
+    enabled: true
+    node:
+      image:
+        tag: "node-V22.1"
+      replicaCount: 2
+      resources:
+        requests:
+          cpu: 300m
+          memory: 256Mi
+        limits:
+          cpu: 300m
+          memory: 256Mi
+      storage: 10Gi
+    peering:
+      enabled: true
+      port: 7176
+    representative:
+      enabled: true
+    rpc:
+      enabled: false
+    webSocket:
+      enabled: false
