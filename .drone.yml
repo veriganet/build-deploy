@@ -39,7 +39,7 @@ steps:
   # rebrand-node
   - name: rebrand-node
     image: veriganet/rebrand:V22.1
-    pull: if-not-exists
+    pull: always
     settings:
       from_secret: docker_secret_veriga
     environment:
@@ -107,7 +107,7 @@ steps:
   # rebrand-nault
   - name: rebrand-nault
     image: veriganet/rebrand:latest
-    pull: if-not-exists
+    pull: always
     settings:
       from_secret: docker_secret_veriga
     environment:
@@ -133,7 +133,7 @@ steps:
   # rebrand-ninja
   - name: rebrand-ninja
     image: veriganet/rebrand:latest
-    pull: if-not-exists
+    pull: always
     environment:
       ABBREVIATION: ${ABBREVIATION}
       LIVE_REP0: ${LIVE_REP0}
@@ -155,7 +155,7 @@ steps:
   # build-push-nault
   - name: build-push-nault
     image: veriganet/base-image:dind-awscli
-    pull: if-not-exists
+    pull: always
     volumes:
       - name: dockersock
         path: /var/run
@@ -188,7 +188,7 @@ steps:
   # build-push-ninja
   - name: build-push-ninja
     image: veriganet/base-image:dind-awscli
-    pull: if-not-exists
+    pull: always
     volumes:
       - name: dockersock
         path: /var/run
@@ -218,7 +218,7 @@ steps:
   # build-binary
   - name: build-binary
     image: nanocurrency/nano-env:gcc
-    pull: if-not-exists
+    pull: always
     settings:
       from_secret: docker_secret_veriga
     environment:
@@ -270,7 +270,6 @@ steps:
       - docker build -f Dockerfile -t $ECR/$ABBREVIATION:node-$NANO_NODE_VERSION nano-node
       - docker push $ECR/$ABBREVIATION:node-$NANO_NODE_VERSION
       - zip -jrm $${ABBREVIATION}_$${NANO_NODE_VERSION}.zip nano-node/build/$${ABBREVIATION}_node nano-node/build/$${ABBREVIATION}_rpc nano-node/build/$${ABBREVIATION}_pow_server
-      - zip -r $${ABBREVIATION}_$${NANO_NODE_VERSION}_build.zip nano-node/build
     depends_on:
       - rebrand-node
       - build-binary
@@ -284,7 +283,7 @@ steps:
   # preprep
   - name: preprep
     image: veriganet/base-image:dind-awscli
-    pull: if-not-exists
+    pull: always
     settings:
       from_secret: docker_secret_veriga
     volumes:
@@ -318,7 +317,7 @@ steps:
   # post-build
   - name: post-build
     image: veriganet/base-image:pre-post
-    pull: if-not-exists
+    pull: always
     settings:
       from_secret: docker_secret_veriga
     environment:
@@ -349,7 +348,7 @@ steps:
   # deploy-live
   - name: deploy-live
     image: alpine:latest
-    pull: if-not-exists
+    pull: always
     settings:
       from_secret: docker_secret_veriga
     environment:
@@ -366,7 +365,7 @@ steps:
   # terminate-live
   - name: terminate-live
     image: veriganet/dind-awscli
-    pull: if-not-exists
+    pull: always
     privileged: true
     settings:
       from_secret: docker_secret_veriga
@@ -385,7 +384,7 @@ steps:
   # build-status-update
   - name: build-status-update
     image: veriganet/base-image:pre-post
-    pull: if-not-exists
+    pull: always
     environment:
       VERIGA_BUILD_DEPLOY_ID: ${VERIGA_BUILD_DEPLOY_ID}
       VERIGA_ADMIN_TOKEN:
@@ -411,7 +410,7 @@ steps:
   # deploy-status-update
   - name: deploy-status-update
     image: veriganet/base-image:pre-post
-    pull: if-not-exists
+    pull: always
     environment:
       VERIGA_BUILD_DEPLOY_ID: ${VERIGA_BUILD_DEPLOY_ID}
       VERIGA_ADMIN_TOKEN:
@@ -435,7 +434,7 @@ steps:
   # terminate-status-update
   - name: terminate-status-update
     image: veriganet/base-image:pre-post
-    pull: if-not-exists
+    pull: always
     environment:
       VERIGA_BLOCK_CHAIN_ID: ${VERIGA_BLOCK_CHAIN_ID}
       VERIGA_BUILD_DEPLOY_ID: ${VERIGA_BUILD_DEPLOY_ID}
