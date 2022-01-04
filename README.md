@@ -15,3 +15,4 @@ Base repository for build and deploy operation
 | preprep      	 | V22.1  	 | V22.1   	 | N/A  	   |
 | dnsupdate    	 | V22.1  	 | V22.1   	 | N/A  	   |
 | helm         	 | V22.1  	 | 363     	 | N/A    	 |
+| boompow        | V22.1    | v3.0.1    | 22.1.0   |

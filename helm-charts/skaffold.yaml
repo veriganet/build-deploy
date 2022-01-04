@@ -43,7 +43,8 @@ profiles:
               proxy.live.rpc.ingress.host: test-rpc.verigasvc.com
               proxy.live.webSocket.ingress.host: test-ws.verigasvc.com
               proxy.live.nodeURL: http://rpc-live:7076
-              proxy.live.nodeWSURL: http://rpc-live:7078
+              proxy.live.nodeWSURL: http://ws-live:7078
+              proxy.live.useBPOW: true
 
           # do not delete or uninstall this release
           # if you must delete, make sure data is backed

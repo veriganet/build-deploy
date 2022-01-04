@@ -3,7 +3,9 @@ proxy:
     enabled: true
     image:
       tag: V22.1
-    logLevel: "DEBUG"
+    logLevel: "info"
+    nodeURL: "http://rpc-live:7076"
+    nodeWSURL: "ws://ws-live:7078"
     replicaCount: 2
     resources:
       requests:
