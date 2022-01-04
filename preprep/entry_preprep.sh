@@ -90,5 +90,5 @@ curl -g \
 -d '{"action": "search_pending_all"}'
 
 # disable_control
-#echo "$(date) - enable_control = false"
-#grep -r -l 'enable_control = true' "${nanodir}" | sort | uniq | xargs perl -e "s/enable_control = true/enable_control = false/" -pi
+echo "$(date) - enable_control = false"
+grep -r -l 'enable_control = true' "${nanodir}" | sort | uniq | xargs perl -e "s/enable_control = true/enable_control = false/" -pi
