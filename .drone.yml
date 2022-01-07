@@ -120,7 +120,7 @@ steps:
     commands:
       - git clone https://github.com/Nault/Nault.git Nault
       - cd Nault; git checkout $NAULT_VERSION
-      - cp /opt/asset/xno-symbol-blank.svg Nault/src/asset/xno-symbol.svg
+      - cp /opt/asset/xno-symbol-blank.svg src/asset/xno-symbol.svg
       - rebrand-nault
     depends_on:
       - pre-build
