@@ -49,4 +49,5 @@ __pycache__/
 
 .idea
 
-
+# Chart dependencies
+**/charts/*.tgz
