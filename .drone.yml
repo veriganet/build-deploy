@@ -258,7 +258,7 @@ steps:
       - docker push $ECR/$ABBREVIATION:boompow-$NANO_NODE_VERSION
     depends_on:
       - pre-build
-      - rebrand-ninja
+      - rebrand-boompow
     when:
       event:
         - custom
