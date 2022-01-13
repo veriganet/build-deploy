@@ -89,6 +89,8 @@ steps:
       TEST_RPC_PORT: ${TEST_RPC_PORT}
       NANO_NODE_VERSION: ${NODE_VERSION}
       NUMBER_OF_PEERS: ${NUMBER_OF_PEERS}
+      WORK_THRESHOLD_DEFAULT: ${WORK_THRESHOLD_DEFAULT}
+      WORK_RECEIVE_THRESHOLD_DEFAULT: ${WORK_RECEIVE_THRESHOLD_DEFAULT}
     commands:
       - git clone https://github.com/nanocurrency/nano-node.git nano-node
       - cd nano-node
@@ -161,10 +163,33 @@ steps:
       ABBREVIATION: ${ABBREVIATION}
       BOOMPOW_VERSION: ${BOOMPOW_VERSION}
       BOOMPOW_PAYOUT_ADDRESS: ${BOOMPOW_PAYOUT_ADDRESS}
+      WORK_THRESHOLD_DEFAULT: ${WORK_THRESHOLD_DEFAULT}
     commands:
       - git clone https://github.com/BananoCoin/boompow.git boompow
       - cd boompow; git checkout $BOOMPOW_VERSION; cd ..
       - rebrand-boompow
+    depends_on:
+      - pre-build
+    when:
+      event:
+        - custom
+      target:
+        exclude:
+          - live
+          - live-terminate
+  # rebrand-proxy
+  - name: rebrand-proxy
+    image: veriganet/rebrand:latest
+    pull: always
+    environment:
+      ABBREVIATION: ${ABBREVIATION}
+      PROXY_PRICE_URL: ${PROXY_PRICE_URL}
+      PROXY_VERSION: ${PROXY_VERSION}
+      WORK_THRESHOLD_DEFAULT: ${WORK_THRESHOLD_DEFAULT}
+    commands:
+      - git clone https://github.com/Joohansson/NanoRPCProxy.git NanoRPCProxy
+      - cd NanoRPCProxy; git checkout $PROXY_VERSION; cd ..
+      - rebrand-proxy
     depends_on:
       - pre-build
     when:
@@ -187,6 +212,7 @@ steps:
         from_secret: docker_api_key
       ECR: veriganet
       NANO_NODE_VERSION: ${NODE_VERSION}
+      NAULD_PRICE_URL: ${NAULD_PRICE_URL}
       NAULT_VERSION: ${NAULT_VERSION}
     commands:
       - sleep 5 # give docker enough time to start
@@ -256,6 +282,35 @@ steps:
       - docker build -f boompow/server/Dockerfile -t $ECR/$ABBREVIATION:boompow-$BOOMPOW_VERSION -t $ECR/$ABBREVIATION:boompow-$NANO_NODE_VERSION boompow/server
       - docker push $ECR/$ABBREVIATION:boompow-$BOOMPOW_VERSION
       - docker push $ECR/$ABBREVIATION:boompow-$NANO_NODE_VERSION
+    depends_on:
+      - pre-build
+      - rebrand-boompow
+    when:
+      event:
+        - custom
+      target:
+        exclude:
+          - live
+          - live-terminate
+  # build-push-proxy
+  - name: build-push-proxy
+    image: veriganet/base-image:dind-awscli
+    pull: always
+    volumes:
+      - name: dockersock
+        path: /var/run
+    environment:
+      ABBREVIATION: ${ABBREVIATION}
+      DOCKER_API_KEY:
+        from_secret: docker_api_key
+      ECR: veriganet
+      PROXY_VERSION: ${PROXY_VERSION}
+    commands:
+      - sleep 5 # give docker enough time to start
+      - docker login -u veriganet -p $DOCKER_API_KEY
+      - docker build -f NanoRPCProxy/Dockerfile -t $ECR/$ABBREVIATION:proxy-$PROXY_VERSION -t $ECR/$ABBREVIATION:proxy-$NANO_NODE_VERSION NanoRPCProxy
+      - docker push $ECR/$ABBREVIATION:proxy-$PROXY_VERSION
+      - docker push $ECR/$ABBREVIATION:proxy-$NANO_NODE_VERSION
     depends_on:
       - pre-build
       - rebrand-boompow
