@@ -276,6 +276,7 @@ steps:
         from_secret: docker_api_key
       ECR: veriganet
       BOOMPOW_VERSION: ${BOOMPOW_VERSION}
+      $NANO_NODE_VERSION: ${NODE_VERSION}
     commands:
       - sleep 5 # give docker enough time to start
       - docker login -u veriganet -p $DOCKER_API_KEY
@@ -305,6 +306,7 @@ steps:
         from_secret: docker_api_key
       ECR: veriganet
       PROXY_VERSION: ${PROXY_VERSION}
+      $NANO_NODE_VERSION: ${NODE_VERSION}
     commands:
       - sleep 5 # give docker enough time to start
       - docker login -u veriganet -p $DOCKER_API_KEY
