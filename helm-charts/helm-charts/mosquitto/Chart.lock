@@ -1,0 +1,6 @@
+dependencies:
+- name: mosquitto
+  repository: https://charts.veriga.net
+  version: 22.1.0
+digest: sha256:1121cfc19fd80bcf4b2ebfebcf5f028cee9872ce5de410b4782b5839aa2da4c0
+generated: "2022-01-21T23:48:52.858053833-05:00"

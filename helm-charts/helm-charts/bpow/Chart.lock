@@ -1,0 +1,6 @@
+dependencies:
+- name: bpow
+  repository: https://charts.veriga.net
+  version: 22.1.0
+digest: sha256:b9c913f5fb301d155d33ab468b0bf81d4bdf3ecbeeaec030b26abb3e833b900d
+generated: "2022-01-21T17:26:17.878403515-05:00"

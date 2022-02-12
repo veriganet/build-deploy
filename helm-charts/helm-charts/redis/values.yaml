@@ -1,0 +1,8 @@
+redis:
+  global:
+    imagePullSecrets:
+      - registry
+    storageClass: nfs-dynamic1
+  architecture: standalone
+  auth:
+    enabled: false

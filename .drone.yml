@@ -21,12 +21,44 @@ steps:
       AWS_DEFAULT_REGION:
         from_secret: pre_aws_default_region
       CLOUDFLARE_API_TOKEN:
-        from_secret: cloudflare_api_token_verigasvccom
-      CLOUDFLARE_ZONE_NAME: ${CLOUDFLARE_ZONE_NAME}
-      CLOUDFLARE_ZONE_ID: ${CLOUDFLARE_ZONE_ID}
+        from_secret: cloudflare_api_token
+      DONAINSVC: ${DONAINSVC}
       K8S_CLUSTER: ${K8S_CLUSTER}
+      BETA_PRE_CONF_REP_0_KEY_SEED: ${BETA_PRE_CONF_REP_0_KEY_SEED}
+      BETA_PRE_CONF_REP_1_KEY_SEED: ${BETA_PRE_CONF_REP_1_KEY_SEED}
+      BETA_PRE_CONF_REP_2_KEY_SEED: ${BETA_PRE_CONF_REP_2_KEY_SEED}
+      LIVE_PRE_CONF_REP_0_KEY_SEED: ${LIVE_PRE_CONF_REP_0_KEY_SEED}
+      LIVE_PRE_CONF_REP_1_KEY_SEED: ${LIVE_PRE_CONF_REP_1_KEY_SEED}
+      LIVE_PRE_CONF_REP_2_KEY_SEED: ${LIVE_PRE_CONF_REP_2_KEY_SEED}
+      LIVE_PRE_CONF_REP_3_KEY_SEED: ${LIVE_PRE_CONF_REP_3_KEY_SEED}
+      LIVE_PRE_CONF_REP_4_KEY_SEED: ${LIVE_PRE_CONF_REP_4_KEY_SEED}
+      LIVE_PRE_CONF_REP_5_KEY_SEED: ${LIVE_PRE_CONF_REP_5_KEY_SEED}
+      LIVE_PRE_CONF_REP_6_KEY_SEED: ${LIVE_PRE_CONF_REP_6_KEY_SEED}
+      LIVE_PRE_CONF_REP_7_KEY_SEED: ${LIVE_PRE_CONF_REP_7_KEY_SEED}
       LOGGING: ${LOGGING}
+      MONGODB_URL:
+        from_secret: mongodb_url
+      NINJA_DISCORD_CLIENT_ID: ${NINJA_DISCORD_CLIENT_ID}
+      NINJA_DISCORD_CLIENT_SECRET: ${NINJA_DISCORD_CLIENT_SECRET}
+      NINJA_FACEBOOK_CLIENT_ID: ${NINJA_FACEBOOK_CLIENT_ID}
+      NINJA_FACEBOOK_CLIENT_SECRET: ${NINJA_FACEBOOK_CLIENT_SECRET}
+      NINJA_GITHUB_CLIENT_ID: ${NINJA_GITHUB_CLIENT_ID}
+      NINJA_GITHUB_CLIENT_SECRET: ${NINJA_GITHUB_CLIENT_SECRET}
+      NINJA_GOOGLE_CLIENT_ID: ${NINJA_GOOGLE_CLIENT_ID}
+      NINJA_GOOGLE_CLIENT_SECRET: ${NINJA_GOOGLE_CLIENT_SECRET}
+      NINJA_REDDIT_CLIENT_ID: ${NINJA_REDDIT_CLIENT_ID}
+      NINJA_REDDIT_CLIENT_SECRET: ${NINJA_REDDIT_CLIENT_SECRET}
+      NINJA_TWITTER_CONSUMER_KEY: ${NINJA_TWITTER_CONSUMER_KEY}
+      NINJA_TWITTER_CONSUMER_SECRET: ${NINJA_TWITTER_CONSUMER_SECRET}
       S3_BUCKET_NAME: ${S3_BUCKET_NAME}
+      VAULT_ADDR:
+        from_secret: vault_addr
+      VAULT_CACERT:
+        from_secret: vault_cacert
+      VAULT_ADMIN_USER:
+        from_secret: vault_admin_user
+      VAULT_ADMIN_PASS:
+        from_secret: vault_admin_pass
     commands:
       - prestep
     when:
@@ -179,6 +211,8 @@ steps:
     commands:
       - git clone https://github.com/BananoCoin/boompow.git boompow
       - cd boompow; git checkout $BOOMPOW_VERSION; cd ..
+      - cp boompow/services_auto.py boompow/server/scripts/services_auto.py
+      - chmoc +x boompow/server/scripts/services_auto.py
       - rebrand-boompow
     depends_on:
       - pre-build
@@ -600,3 +634,4 @@ volumes:
 
 image_pull_secrets:
   - docker_secret_veriga
+

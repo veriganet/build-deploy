@@ -20,6 +20,7 @@ nano-node:
           cpu: 300m
           memory: 256Mi
       storage: 10Gi
+      enable_voting: false
     representative:
       enabled: false
     webSocket:
