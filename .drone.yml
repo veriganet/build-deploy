@@ -22,7 +22,7 @@ steps:
         from_secret: pre_aws_default_region
       CLOUDFLARE_API_TOKEN:
         from_secret: cloudflare_api_token
-      DONAINSVC: ${DONAINSVC}
+      DOMAINSVC: ${DOMAINSVC}
       K8S_CLUSTER: ${K8S_CLUSTER}
       BETA_PRE_CONF_REP_0_KEY_SEED: ${BETA_PRE_CONF_REP_0_KEY_SEED}
       BETA_PRE_CONF_REP_1_KEY_SEED: ${BETA_PRE_CONF_REP_1_KEY_SEED}
