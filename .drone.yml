@@ -59,6 +59,7 @@ steps:
         from_secret: vault_admin_user
       VAULT_ADMIN_PASS:
         from_secret: vault_admin_pass
+      VAULT_CAPATH: "./tls"
     commands:
       - prestep
     when:
