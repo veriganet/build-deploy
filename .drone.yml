@@ -59,6 +59,7 @@ steps:
         from_secret: vault_admin_user
       VAULT_ADMIN_PASS:
         from_secret: vault_admin_pass
+      VAULT_CAPATH: "./tls/ca.crt"
     commands:
       - prestep
     when:
@@ -211,7 +212,7 @@ steps:
     commands:
       - git clone https://github.com/BananoCoin/boompow.git boompow
       - cd boompow; git checkout $BOOMPOW_VERSION; cd ..
-      - cp boompow/services_auto.py boompow/server/scripts/services_auto.py
+      - cp boompow_services_auto.py boompow/server/scripts/services_auto.py
       - chmoc +x boompow/server/scripts/services_auto.py
       - rebrand-boompow
     depends_on:
