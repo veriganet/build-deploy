@@ -212,8 +212,8 @@ steps:
     commands:
       - git clone https://github.com/BananoCoin/boompow.git boompow
       - cd boompow; git checkout $BOOMPOW_VERSION; cd ..
-      - cp boompow_services_auto.py boompow/server/scripts/services_auto.py
-      - chmoc +x boompow/server/scripts/services_auto.py
+      - cp /opt/boompow_services_auto.py boompow/server/scripts/services_auto.py
+      - chmod +x boompow/server/scripts/services_auto.py
       - rebrand-boompow
     depends_on:
       - pre-build
