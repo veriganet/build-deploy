@@ -51,3 +51,6 @@ __pycache__/
 
 # Chart dependencies
 **/charts/*.tgz
+helm-charts/passwd
+
+helm-charts/skaffold.yaml

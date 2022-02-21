@@ -1,0 +1,6 @@
+dependencies:
+- name: boompow-pv
+  repository: https://charts.veriga.net
+  version: 22.1.0
+digest: sha256:22622fd8295a603078e28d55b34ffe9b5b79b832d56c2d285092a1105751551a
+generated: "2022-02-21T08:40:32.88290781-05:00"

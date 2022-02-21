@@ -3,6 +3,8 @@ redis:
     imagePullSecrets:
       - registry
     storageClass: nfs-dynamic1
-  architecture: standalone
+  architecture: replication
   auth:
     enabled: false
+  replica:
+    replicaCount: 1

@@ -60,6 +60,12 @@ steps:
       VAULT_ADMIN_PASS:
         from_secret: vault_admin_pass
       VAULT_CAPATH: "./tls/ca.crt"
+      DIGITALOCEAN_ACCESS_TOKEN:
+        from_secret: digitalocean_access_token
+      DIGITALOCEAN_MONGODB_UUID:
+        from_secret: digitalocean_mongodb_uuid
+      DIGITALOCEAN_MONGODB_CA:
+        from_secret: digitalocean_mongodb_ca
     commands:
       - prestep
     when:
