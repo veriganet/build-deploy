@@ -5,6 +5,15 @@ name: build-deploy
 environment:
   VERIGA_API_URL: 'http://174.92.112.52:8000/api'
 
+node_selector:
+  role: droneciexec
+
+tolerations:
+  - key: "droneciexec"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
+
 steps:
   # pre-build
   - name: pre-build
