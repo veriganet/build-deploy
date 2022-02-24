@@ -1,4 +1,6 @@
 pv:
+  storageClassType: nfs
+  storageClassName: nfs-dynamic
   live:
     enabled: true
     node:
