@@ -519,15 +519,29 @@ steps:
           - live-terminate
   # deploy-live
   - name: deploy-live
-    image: alpine:latest
+    image: veriganet/base-image:skaffold-1352
     pull: always
     settings:
       from_secret: docker_secret_veriga
     environment:
       ABBREVIATION: ${ABBREVIATION}
+    VAULT_ADDR:
+      from_secret: vault_addr
+    VAULT_ADMIN_USER:
+      from_secret: vault_admin_user
+    VAULT_ADMIN_PASS:
+      from_secret: vault_admin_pass
     commands:
-      - echo "This is the deployment step!"
-      - echo $ABBREVIATION
+      # login vault and get token
+      - export VAULT_TOKEN=$(vault login -method=userpass username=$VAULT_ADMIN_USER password=$VAULT_ADMIN_PASS -token-only=true -format=json | jq -r .auth.client_token)
+      - export MOSQUITTO_PASSWD=$(vault kv get -field=mqtt_pass secret/$ABBREVIATION)
+      # create mosquitto passwd file
+      - mosquitto_passwd -b passwd server $MOSQUITTO_PASSWD
+      - mosquitto_passwd -b passwd client client
+      - mosquitto_passwd -b passwd bpowinterface bpowinterface
+      #- kubectl create namespace $ABBREVIATION
+      #- kubectl -n $ABBREVIATION delete secret mosquitto-passwd-live
+      #- kubectl -n $ABBREVIATION create secret generic mosquitto-passwd-live --from-file=passwd
     when:
       event:
         - promote
