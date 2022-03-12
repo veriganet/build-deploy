@@ -533,8 +533,8 @@ steps:
       from_secret: vault_admin_pass
     commands:
       # login vault and get token
-      - export VAULT_TOKEN=$(vault login -method=userpass username=$VAULT_ADMIN_USER password=$VAULT_ADMIN_PASS -token-only=true -format=json | jq -r .auth.client_token)
-      - export MOSQUITTO_PASSWD=$(vault kv get -field=mqtt_pass secret/$ABBREVIATION)
+      - printenv VAULT_ADMIN_USER | export VAULT_TOKEN=$(vault login -method=userpass username=$VAULT_ADMIN_USER password=$VAULT_ADMIN_PASS -token-only=true -format=json | jq -r .auth.client_token)
+      - ABBREVIATION=tst3 | export MOSQUITTO_PASSWD=$(vault kv get -field=mqtt_pass secret/$ABBREVIATION)
       # create mosquitto passwd file
       - mosquitto_passwd -b passwd server $MOSQUITTO_PASSWD
       - mosquitto_passwd -b passwd client client
