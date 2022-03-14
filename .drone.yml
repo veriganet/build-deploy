@@ -528,7 +528,7 @@ steps:
       K8S1_SERVER:
         from_secret: k8s1_server
       K8S1_CERTIFICATE_AUTHORITY_DATA:
-        from_secret: k8s1_certificate_authority_data
+        from_secret: k8s1_certificate_authority
       K8S1_USER_TOKEN:
         from_secret: k8s1_user_token
       KUBERNETES_STORAGE_CLASS_TYPE: "do"
