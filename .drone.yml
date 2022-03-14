@@ -546,7 +546,7 @@ steps:
         from_secret: veriga_charts_password
     commands:
       - deploy
-      - printenv VERIGA_CHARTS_PASSWORD | helm repo add https://charts.veriga.net --username Zse7yKaoojt5C9E62BnRe3Ke --password-stdin
+      - printenv VERIGA_CHARTS_PASSWORD | helm repo add veriganet https://charts.veriga.net --username Zse7yKaoojt5C9E62BnRe3Ke --password-stdin
       - cd helm-charts; skaffold run -p deploy
     when:
       event:
