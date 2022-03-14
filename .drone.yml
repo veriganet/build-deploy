@@ -542,8 +542,11 @@ steps:
         from_secret: vault_admin_user
       VAULT_ADMIN_PASS:
         from_secret: vault_admin_pass
+      VERIGA_CHARTS_PASSWORD:
+        from_secret: veriga_charts_password
     commands:
       - deploy
+      - printenv VERIGA_CHARTS_PASSWORD | helm repo add --username Zse7yKaoojt5C9E62BnRe3Ke --password-stdin https://charts.veriga.net
       - cd helm-charts; skaffold run -p deploy
     when:
       event:
