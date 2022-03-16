@@ -1,3 +1,4 @@
+---
 kind: pipeline
 type: kubernetes
 name: build-deploy
@@ -671,4 +672,24 @@ volumes:
 
 image_pull_secrets:
   - docker_secret_veriga
+---
+kind: pipeline
+type: exec
+name: build-deploy-windows
 
+platform:
+  os: windows
+
+steps:
+  - name: build-binary
+    environment:
+      ABBREVIATION: ${ABBREVIATION}
+    commands:
+      - echo $ABBREVIATION
+    when:
+      event:
+        - push
+      target:
+        exclude:
+          - live
+          - live-terminate
