@@ -682,10 +682,8 @@ platform:
 
 steps:
   - name: build-binary
-    environment:
-      ABBREVIATION: ${ABBREVIATION}
     commands:
-      - echo $ABBREVIATION
+      - echo hello
     when:
       event:
         - push
