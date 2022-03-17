@@ -443,7 +443,7 @@ steps:
       - docker build -f Dockerfile -t $ECR/$ABBREVIATION:node-$NANO_NODE_VERSION nano-node
       - docker push $ECR/$ABBREVIATION:node-$NANO_NODE_VERSION
       - zip -jrm $${ABBREVIATION}_$${NANO_NODE_VERSION}.zip nano-node/build/$${ABBREVIATION}_node nano-node/build/$${ABBREVIATION}_rpc nano-node/build/$${ABBREVIATION}_pow_server
-      - zip –r $ABBREVIATION_src.zip nano-node/
+      - zip –r $${ABBREVIATION}_src.zip nano-node/ -x nano-node/build/
     depends_on:
       - rebrand-node
       - build-binary
