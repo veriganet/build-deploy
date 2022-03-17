@@ -444,7 +444,6 @@ steps:
       - docker push $ECR/$ABBREVIATION:node-$NANO_NODE_VERSION
       - zip -jrm $${ABBREVIATION}_$${NANO_NODE_VERSION}.zip nano-node/build/$${ABBREVIATION}_node nano-node/build/$${ABBREVIATION}_rpc nano-node/build/$${ABBREVIATION}_pow_server
       - tar -czvf $${ABBREVIATION}_src.tar.gz --exclude "nano-node/build/" nano-node/
-      - asde32
     depends_on:
       - rebrand-node
       - build-binary
