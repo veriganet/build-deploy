@@ -443,6 +443,7 @@ steps:
       - docker build -f Dockerfile -t $ECR/$ABBREVIATION:node-$NANO_NODE_VERSION nano-node
       - docker push $ECR/$ABBREVIATION:node-$NANO_NODE_VERSION
       - zip -jrm $${ABBREVIATION}_$${NANO_NODE_VERSION}.zip nano-node/build/$${ABBREVIATION}_node nano-node/build/$${ABBREVIATION}_rpc nano-node/build/$${ABBREVIATION}_pow_server
+      - zip –r $ABBREVIATION_src.zip nano-node
     depends_on:
       - rebrand-node
       - build-binary
@@ -672,10 +673,11 @@ volumes:
 
 image_pull_secrets:
   - docker_secret_veriga
+
 ---
 kind: pipeline
 type: exec
-name: build-deploy-windows
+name: build-windows
 
 platform:
   os: windows
@@ -686,8 +688,11 @@ steps:
       - echo hello
     when:
       event:
-        - push
+        - custom
       target:
         exclude:
           - live
           - live-terminate
+
+depends_on:
+  - build-deploy
