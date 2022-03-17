@@ -696,13 +696,7 @@ steps:
       BINARY_PUBLIC: "true"
       NANONODEVERSION: ${NODE_VERSION}
     commands:
-      - |
-        Invoke-RestMethod -ContentType "application/gzip" -Uri "https://veriga-$env:ABBREVIATION.s3.$env:AWSDEFAULTREGION.amazonaws.com/$env:ABBREVIATION`_$env:NANONODEVERSION`_src.tar.gz"  -OutFile $env:ABBREVIATION`_$env:NANONODEVERSION`_src.tar.gz
-        tar -xvf $Env:ABBREVIATION`_$Env:NANONODEVERSION`_src.tar.gz
-        cd nano-node; rm -r build; mkdir build; cd build
-        cmake -DNANO_GUI=OFF -DNANO_SIMD_OPTIMIZATIONS=TRUE -DBoost_COMPILER="-vc141" -DBOOST_ROOT="C:\local\boost_1_70_0" -DBOOST_LIBRARYDIR="C:\local\boost_1_70_0\lib64-msvc-14.1" -G "Visual Studio 15 2017 Win64" -DIPHLPAPI_LIBRARY="C:\Program Files (x86)\Windows Kits/10/Lib/10.0.17763.0/um/x64/iphlpapi.lib" -DWINSOCK2_LIBRARY="C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\um\x64\WS2_32.Lib" ..\.
-        cmake --build . --target ALL_BUILD
-        uploadbinary
+      - C:\bin\buildbinary.ps1
     when:
       event:
         - custom
