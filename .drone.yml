@@ -696,7 +696,7 @@ steps:
       BINARY_PUBLIC: "true"
       NANONODEVERSION: ${NODE_VERSION}
     commands:
-      - C:\bin\buildbinary.ps1
+      - echo "build-binary"
     when:
       event:
         - custom
