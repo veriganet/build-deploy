@@ -684,12 +684,26 @@ platform:
 
 steps:
   - name: build-binary
+    environment:
+      ABBREVIATION: ${ABBREVIATION}
+      AWS_ACCESS_KEY_ID:
+        from_secret: pre_aws_access_key_id
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: pre_aws_secret_access_key
+      AWSDEFAULTREGION: "eu-west-1"
+      LOGGING: ${LOGGING}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME}
+      BINARY_PUBLIC: "true"
+      NANONODEVERSION: ${NODE_VERSION}
     commands:
-      - echo "build-binary"
+      - C:\bin\buildbinary.ps1
     when:
       event:
-        - push
+        - custom
       target:
         exclude:
           - live
           - live-terminate
+
+depends_on:
+  - build-deploy
