@@ -691,10 +691,12 @@ steps:
       AWS_SECRET_ACCESS_KEY:
         from_secret: pre_aws_secret_access_key
       AWSDEFAULTREGION: "eu-west-1"
+      AWS_DEFAULT_REGION: "eu-west-1"
       LOGGING: ${LOGGING}
       S3_BUCKET_NAME: ${S3_BUCKET_NAME}
-      BINARY_PUBLIC: "true"
+      BINARY_PUBLIC: ${BINARY_PUBLIC}
       NANONODEVERSION: ${NODE_VERSION}
+      NANO_NODE_VERSION: ${NODE_VERSION}
     commands:
       - C:\bin\buildbinary.ps1
     when:
