@@ -699,8 +699,11 @@ steps:
       - C:\bin\buildbinary.ps1
     when:
       event:
-        - push
+        - custom
       target:
         exclude:
           - live
           - live-terminate
+
+depends_on:
+  - build-deploy
