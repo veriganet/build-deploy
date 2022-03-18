@@ -699,7 +699,7 @@ steps:
       - C:\bin\buildbinary.ps1
     when:
       event:
-        - custom
+        - push
       target:
         exclude:
           - live
