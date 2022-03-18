@@ -688,11 +688,8 @@ steps:
       - echo "build-binary"
     when:
       event:
-        - custom
+        - push
       target:
         exclude:
           - live
           - live-terminate
-
-depends_on:
-  - build-deploy
