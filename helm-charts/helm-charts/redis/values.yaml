@@ -2,8 +2,8 @@ redis:
   global:
     imagePullSecrets:
       - registry
-    storageClass: nfs-dynamic1
-  architecture: replication
+    storageClass: do-block-storage
+  architecture: standalone
   auth:
     enabled: false
   replica:
