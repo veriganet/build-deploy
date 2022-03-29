@@ -534,7 +534,7 @@ steps:
       K8S1_USER_TOKEN:
         from_secret: k8s1_user_token
       KUBERNETES_STORAGE_CLASS_TYPE: "do"
-      KUBERNETES_STORAGE_CLASS_NAME: "do-block-storage"
+      KUBERNETES_STORAGE_CLASS_NAME: "openebs-hostpath"
       VAULT_ADDR:
         from_secret: vault_addr
       VAULT_CACERT:
